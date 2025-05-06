@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Link from "next/link";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,10 +24,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="ja">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Link className="flex justify-center" href="/">
+          <svg
+            width="200"
+            height="60"
+            viewBox="0 0 200 60"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="100%" height="100%" fill="none" />
+            <text
+              x="10"
+              y="40"
+              fontFamily="Segoe UI, Roboto, Helvetica, sans-serif"
+              fontSize="32"
+              fill="#4B3621"
+              letterSpacing="1"
+            >
+              まめログ
+            </text>
+          </svg>
+        </Link>
+
         {children}
       </body>
     </html>

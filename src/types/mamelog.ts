@@ -1,0 +1,22 @@
+export type Mamelog = {
+  id: string;
+  comment: string;
+  country_name: string;
+  create_at: string;
+  district_name: string;
+  exp_date: string;
+  farm: string;
+  flavor: string;
+  generation: string;
+  is_blend: boolean;
+  price: number;
+  product_name: string;
+  purchase_date: string;
+  region_name: string;
+  regist_user: string;
+  roast_date: string;
+  roast_level: string;
+  shop_name: string;
+  update_at: string;
+  volume: number;
+};
