@@ -13,6 +13,15 @@ export default function Home() {
   const [mamelogs, setMamelogs] = useState<Mamelog[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const loadMamelogs = async () => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (user) {
+      const data = await fetchMamelogs(user.uid);
+      setMamelogs(data);
+    }
+  };
+
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -35,9 +44,9 @@ export default function Home() {
   }
 
   return (
-    <div className="p-8">
+    <div className="p-4">
       <LoginChecker />
-      <CreateForm />
+      <CreateForm onSuccess={loadMamelogs} />
       <MamelogList mamelogs={mamelogs} />
     </div>
   );

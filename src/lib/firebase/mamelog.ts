@@ -5,12 +5,13 @@ import {
   Timestamp,
   query,
   where,
+  deleteDoc,
+  doc,
 } from "firebase/firestore";
 import db from "@/lib/firebase/firebase";
 import { Mamelog } from "@/types/mamelog";
 
 export const fetchMamelogs = async (userId: string): Promise<Mamelog[]> => {
-  console.log("userId", userId);
   const q = query(
     collection(db, "mamelog"),
     where("regist_user", "==", userId)
@@ -42,4 +43,13 @@ export const addMamelog = async (data: Omit<Mamelog, "id">) => {
     update_at: Timestamp.now(),
   });
   return docRef.id;
+};
+
+export const deleteMamelog = async (id: string) => {
+  try {
+    await deleteDoc(doc(db, "mamelog", id));
+    console.log("削除成功！");
+  } catch (error) {
+    console.error("削除エラー:", error);
+  }
 };
