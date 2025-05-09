@@ -10,6 +10,7 @@ import {
 import { deleteMamelog } from "@/lib/firebase/mamelog";
 import { Button } from "./ui/button";
 import { Trash2 } from "lucide-react";
+import { PenLine } from "lucide-react";
 import { toast } from "sonner";
 import {
   Popover,
@@ -27,9 +28,12 @@ import {
   AlertDialogCancel,
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import PostForm from "@/components/PostForm";
+import { useState } from "react";
 
 type Props = {
   mamelogs: Mamelog[];
+  onSuccess?: () => void;
 };
 
 // 日付をyyyy/mm/dd形式にフォーマットするヘルパー関数
@@ -41,11 +45,14 @@ const formatDate = (dateString: string) => {
   return `${year}/${month}/${day}`;
 };
 
-export default function MamelogList({ mamelogs }: Props) {
+export default function MamelogList({ mamelogs, onSuccess }: Props) {
+  const [editingItem, setEditingItem] = useState<Mamelog | null>(null);
+  const [open, setOpen] = useState(false);
   const handleDelete = async (id: string) => {
     try {
       await deleteMamelog(id);
       toast.success("削除が完了しました");
+      onSuccess?.();
     } catch (error) {
       toast.error("削除に失敗しました");
     }
@@ -53,11 +60,31 @@ export default function MamelogList({ mamelogs }: Props) {
 
   return (
     <main>
+      <PostForm
+        onSuccess={() => {
+          setOpen(false);
+          onSuccess?.();
+        }}
+        isOpen={open}
+        initialData={editingItem || undefined}
+        onOpenChange={setOpen}
+      />
       {mamelogs.map((item) => (
         <div key={item.id}>
           <Popover>
             <PopoverTrigger asChild>
               <Card className="relative mb-2 rounded-sm cursor-pointer">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="absolute top-2 right-4 h-8 w-8 rounded-full text-gray-500 hover:bg-gray-100"
+                  onClick={() => {
+                    setEditingItem(item); // 対象を設定
+                    setOpen(true); // フォームを開く
+                  }}
+                >
+                  <PenLine className="h-4 w-4" />
+                </Button>
                 <CardHeader>
                   <CardTitle>{item.shop_name}</CardTitle>
                   <CardDescription className="mt-2">
@@ -78,7 +105,7 @@ export default function MamelogList({ mamelogs }: Props) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute top-4 right-4 h-8 w-8 rounded-full text-red-500 hover:bg-gray-100"
+                      className="absolute bottom-2 right-4 h-8 w-8 rounded-full text-red-500 hover:bg-gray-100"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

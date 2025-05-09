@@ -2,6 +2,7 @@ import {
   collection,
   getDocs,
   addDoc,
+  setDoc,
   Timestamp,
   query,
   where,
@@ -44,6 +45,23 @@ export const addMamelog = async (data: Omit<Mamelog, "id">) => {
   });
   return docRef.id;
 };
+
+export async function setMamelog(id: string, data: Mamelog) {
+  console.log(id, data);
+  const docRef = doc(db, "mamelog", id);
+  await setDoc(
+    docRef,
+    {
+      ...data,
+      exp_date: Timestamp.fromDate(new Date(data.exp_date)),
+      purchase_date: Timestamp.fromDate(new Date(data.purchase_date)),
+      roast_date: Timestamp.fromDate(new Date(data.roast_date)),
+      create_at: Timestamp.fromDate(new Date(data.create_at)),
+      update_at: Timestamp.now(),
+    },
+    { merge: true }
+  ); // merge: true で既存フィールドを残す
+}
 
 export const deleteMamelog = async (id: string) => {
   try {

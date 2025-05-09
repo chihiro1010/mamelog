@@ -1,13 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { addMamelog } from "@/lib/firebase/mamelog";
+import { addMamelog, setMamelog } from "@/lib/firebase/mamelog";
 import { Mamelog } from "@/types/mamelog";
 import mstData from "@/data/mst.json"; // mst.jsonをインポート
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
-import { Checkbox } from "./ui/checkbox";
 import {
   Select,
   SelectTrigger,
@@ -25,7 +24,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast, Toaster } from "sonner";
 import { Button } from "./ui/button";
-import { SquarePen } from "lucide-react";
 import { getAuth } from "firebase/auth";
 import {
   Collapsible,
@@ -37,12 +35,20 @@ import { ChevronDown, ChevronRight } from "lucide-react";
 
 interface Props {
   onSuccess?: () => void;
+  isOpen?: boolean;
+  initialData?: Mamelog;
+  onOpenChange: (open: boolean) => void;
 }
 
-export default function MamelogForm({ onSuccess }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [open, setOpen] = useState(false);
+export default function MamelogForm({
+  onSuccess,
+  isOpen,
+  initialData,
+  onOpenChange,
+}: Props) {
+  const [isDetailsOpen, setisDetailsOpen] = useState(false);
   const [form, setForm] = useState({
+    id: "",
     product_name: "",
     country_name: "",
     region_name: "",
@@ -103,35 +109,51 @@ export default function MamelogForm({ onSuccess }: Props) {
     }
 
     try {
-      await addMamelog({ ...form });
-      toast.success("まめログの登録が完了しました！");
-      setOpen(false);
+      console.log("initialData", initialData);
+      console.log("form", form);
+      if (initialData && initialData.id) {
+        await setMamelog(initialData.id, form);
+        toast.success("まめログを更新しました！");
+      } else {
+        await addMamelog(form);
+        toast.success("まめログの登録が完了しました！");
+      }
       onSuccess?.();
     } catch (error) {
-      toast.error("登録に失敗しました。もう一度お試しください。");
+      toast.error("保存に失敗しました。もう一度お試しください。");
     }
   };
 
   useEffect(() => {
     const auth = getAuth();
     const user = auth.currentUser;
-    if (user) {
+    if (!initialData && user) {
       setForm((prev) => ({ ...prev, regist_user: user.uid }));
     }
-  }, []);
+    if (initialData) {
+      setForm({
+        ...initialData,
+        id: initialData.id,
+        // 以下、初期データにない場合に備えてfallbackを設定
+        exp_date: initialData.exp_date || new Date().toISOString(),
+        purchase_date: initialData.purchase_date || new Date().toISOString(),
+        roast_date: initialData.roast_date || new Date().toISOString(),
+        create_at: initialData.create_at || new Date().toISOString(),
+        update_at: new Date().toISOString(), // 更新日だけは常に今
+      });
+    }
+  }, [initialData]);
 
   return (
     <>
       <Toaster position="top-right" richColors />
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button className="fixed bottom-6 right-6 bg-primary text-white p-5 rounded-full shadow-lg hover:bg-primary/90 transition">
-            <SquarePen />
-          </Button>
-        </DialogTrigger>
+      <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent className="w-[90%] max-w-2xl h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>まめログを登録</DialogTitle>
+            <DialogTitle>
+              {" "}
+              {initialData ? "まめログを編集" : "まめログを登録"}
+            </DialogTitle>
           </DialogHeader>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -263,9 +285,9 @@ export default function MamelogForm({ onSuccess }: Props) {
               />
             </div>
 
-            <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <Collapsible open={isDetailsOpen} onOpenChange={setisDetailsOpen}>
               <CollapsibleTrigger className="flex items-center space-x-2 text-sm text-gray-600 hover:underline">
-                {isOpen ? (
+                {isDetailsOpen ? (
                   <ChevronDown size={16} />
                 ) : (
                   <ChevronRight size={16} />
@@ -333,7 +355,7 @@ export default function MamelogForm({ onSuccess }: Props) {
 
             <div>
               <Button type="submit" className="py-2 w-full rounded">
-                登録する
+                {initialData ? "更新する" : "登録する"}
               </Button>
             </div>
           </form>
