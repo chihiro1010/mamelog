@@ -5,6 +5,7 @@ declare module "next-pwa" {
     dest: string;
     register?: boolean;
     skipWaiting?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   }
 

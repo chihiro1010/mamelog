@@ -53,6 +53,7 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
       await deleteMamelog(id);
       toast.success("削除が完了しました");
       onSuccess?.();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("削除に失敗しました");
     }

@@ -17,10 +17,8 @@ import {
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { toast, Toaster } from "sonner";
 import { Button } from "./ui/button";
@@ -119,6 +117,7 @@ export default function MamelogForm({
         toast.success("まめログの登録が完了しました！");
       }
       onSuccess?.();
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("保存に失敗しました。もう一度お試しください。");
     }

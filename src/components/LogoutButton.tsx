@@ -14,6 +14,7 @@ export default function LogoutButton() {
       await logout();
       toast.success("ログアウトしました");
       router.push("/login");
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("ログアウトに失敗しました");
     }

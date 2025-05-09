@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const withPWA = require("next-pwa")({
   dest: "public", // Service Workerの出力先
   register: true, // 自動登録
@@ -7,5 +8,6 @@ const withPWA = require("next-pwa")({
 
 module.exports = withPWA({
   reactStrictMode: true,
+  output: "export", // 静的エクスポート設定
   // 他のNext.js設定をここに追加
 });
