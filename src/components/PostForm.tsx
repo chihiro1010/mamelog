@@ -107,8 +107,6 @@ export default function MamelogForm({
     }
 
     try {
-      console.log("initialData", initialData);
-      console.log("form", form);
       if (initialData && initialData.id) {
         await setMamelog(initialData.id, form);
         toast.success("まめログを更新しました！");

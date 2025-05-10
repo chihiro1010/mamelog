@@ -95,19 +95,19 @@ export default function RegisterForm() {
           </Button>
           <Button
             type="button"
-            variant="secondary"
-            onClick={handleGuestLogin} // ✅ 関数に変更
-            className="w-full"
-          >
-            ゲストログイン
-          </Button>
-          <Button
-            type="button"
             variant="outline"
-            onClick={handleGoogleLogin} // ✅ 関数に変更
+            onClick={handleGoogleLogin}
             className="w-full"
           >
             Googleでログイン
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={handleGuestLogin}
+            className="w-full"
+          >
+            おためしログイン（ログアウトするとデータが削除されます）
           </Button>
         </CardFooter>
       </form>

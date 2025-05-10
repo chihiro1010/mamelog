@@ -23,8 +23,8 @@ export const fetchMamelogs = async (userId: string): Promise<Mamelog[]> => {
     const data = doc.data();
 
     return {
-      id: doc.id,
       ...data,
+      id: doc.id,
       create_at: data.create_at.toDate().toISOString(),
       update_at: data.update_at.toDate().toISOString(),
       exp_date: data.exp_date.toDate().toISOString(),
@@ -47,7 +47,6 @@ export const addMamelog = async (data: Omit<Mamelog, "id">) => {
 };
 
 export async function setMamelog(id: string, data: Mamelog) {
-  console.log(id, data);
   const docRef = doc(db, "mamelog", id);
   await setDoc(
     docRef,
@@ -66,7 +65,6 @@ export async function setMamelog(id: string, data: Mamelog) {
 export const deleteMamelog = async (id: string) => {
   try {
     await deleteDoc(doc(db, "mamelog", id));
-    console.log("削除成功！");
   } catch (error) {
     console.error("削除エラー:", error);
   }
