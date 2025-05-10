@@ -9,5 +9,7 @@ const withPWA = require("next-pwa")({
 module.exports = withPWA({
   reactStrictMode: true,
   output: "export", // 静的エクスポート設定
-  // 他のNext.js設定をここに追加
+  images: {
+    unoptimized: true, // 画像最適化を無効化
+  },
 });

@@ -228,14 +228,27 @@ export default function MamelogForm({
               <Label className="mb-2 text-gray-600" htmlFor="generation">
                 精製方法
               </Label>
-              <Input
-                id="generation"
-                name="generation"
-                placeholder="精製方法"
+              <Select
                 value={form.generation}
-                onChange={handleChange}
-                className="border p-2 w-full"
-              />
+                onValueChange={(value) =>
+                  setForm((prev) => ({ ...prev, generation: value }))
+                }
+              >
+                <SelectTrigger
+                  className={`w-full ${
+                    errors.country_name ? "border-red-500" : ""
+                  }`}
+                >
+                  <SelectValue placeholder="焙煎度を選択" />
+                </SelectTrigger>
+                <SelectContent>
+                  {mstData.generations.map((generation) => (
+                    <SelectItem key={generation} value={generation}>
+                      {generation}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div>

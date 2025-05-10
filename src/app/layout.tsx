@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,24 +35,13 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Link className="flex justify-center mt-3" href="/">
-          <svg
-            width="132"
-            height="60"
-            viewBox="0 0 132 60"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <rect width="100%" height="100%" fill="none" />
-            <text
-              x="10"
-              y="40"
-              fontFamily="Segoe UI, Roboto, Helvetica, sans-serif"
-              fontSize="28"
-              fill="#4B3621"
-              letterSpacing="1"
-            >
-              まめログ
-            </text>
-          </svg>
+          <Image
+            src="/icons/icon-512x512.png"
+            alt="まめログ"
+            width={60}
+            height={60}
+            priority
+          />
         </Link>
         {children}
       </body>

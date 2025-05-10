@@ -1,6 +1,6 @@
 {
-  "name": "Mamelog",
-  "short_name": "Mamelog",
+  "name": "まめログ",
+  "short_name": "まめログ",
   "description": "お気に入りの珈琲豆を管理するアプリ",
   "start_url": "/",
   "display": "standalone",
