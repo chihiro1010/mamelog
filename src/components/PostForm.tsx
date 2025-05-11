@@ -38,7 +38,7 @@ interface Props {
   onOpenChange: (open: boolean) => void;
 }
 
-export default function MamelogForm({
+export default function PostForm({
   onSuccess,
   isOpen,
   initialData,
@@ -145,7 +145,7 @@ export default function MamelogForm({
     <>
       <Toaster position="top-right" richColors />
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="w-[90%] max-w-2xl h-[90vh] overflow-y-auto">
+        <DialogContent className="w-[90%] max-w-2xl h-auto overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {" "}

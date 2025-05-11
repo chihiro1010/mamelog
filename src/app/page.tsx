@@ -53,7 +53,14 @@ export default function Home() {
         <LogoutButton></LogoutButton>
       </div>
       <LoginChecker />
-      <PostForm onSuccess={loadMamelogs} isOpen={open} onOpenChange={setOpen} />
+      <PostForm
+        onSuccess={() => {
+          setOpen(false);
+          loadMamelogs();
+        }}
+        isOpen={open}
+        onOpenChange={setOpen}
+      />
       <MamelogList mamelogs={mamelogs} onSuccess={loadMamelogs} />
       <Button
         className="fixed bottom-6 right-6 bg-primary text-white p-5 rounded-full shadow-lg hover:bg-primary/90 transition"
