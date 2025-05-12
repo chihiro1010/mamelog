@@ -1,6 +1,6 @@
 ↓ここでアプリを利用できます
 
-https://mamelog-84649.web.app/welcome
+[https://mamelog-84649.web.app/welcome](https://mamelog-84649.web.app)
 
 ### 概要
 購入したコーヒー豆の情報を管理するためのメモアプリです。
