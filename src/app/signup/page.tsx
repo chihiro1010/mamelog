@@ -107,7 +107,7 @@ export default function RegisterForm() {
             onClick={handleGuestLogin}
             className="w-full"
           >
-            おためしログイン（ログアウトするとデータが削除されます）
+            おためしログイン
           </Button>
         </CardFooter>
       </form>
