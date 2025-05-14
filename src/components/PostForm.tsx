@@ -37,6 +37,28 @@ interface Props {
   initialData?: Mamelog;
   onOpenChange: (open: boolean) => void;
 }
+const getInitialFormState = () => ({
+  id: "",
+  product_name: "",
+  country_name: "",
+  region_name: "",
+  district_name: "",
+  comment: "",
+  exp_date: new Date().toISOString(),
+  farm: "",
+  flavor: "",
+  generation: "",
+  is_blend: false,
+  price: 0,
+  purchase_date: new Date().toISOString(),
+  regist_user: getAuth().currentUser?.uid || "",
+  roast_date: new Date().toISOString(),
+  roast_level: "",
+  shop_name: "",
+  volume: 0,
+  create_at: new Date().toISOString(),
+  update_at: new Date().toISOString(),
+});
 
 export default function PostForm({
   onSuccess,
@@ -45,28 +67,7 @@ export default function PostForm({
   onOpenChange,
 }: Props) {
   const [isDetailsOpen, setisDetailsOpen] = useState(false);
-  const [form, setForm] = useState({
-    id: "",
-    product_name: "",
-    country_name: "",
-    region_name: "",
-    district_name: "",
-    comment: "",
-    exp_date: new Date().toISOString(),
-    farm: "",
-    flavor: "",
-    generation: "",
-    is_blend: false,
-    price: 0,
-    purchase_date: new Date().toISOString(),
-    regist_user: "",
-    roast_date: new Date().toISOString(),
-    roast_level: "",
-    shop_name: "",
-    volume: 0,
-    create_at: new Date().toISOString(),
-    update_at: new Date().toISOString(),
-  });
+  const [form, setForm] = useState(getInitialFormState);
   const [errors, setErrors] = useState({
     shop_name: false,
     country_name: false,
@@ -110,9 +111,11 @@ export default function PostForm({
       if (initialData && initialData.id) {
         await setMamelog(initialData.id, form);
         toast.success("まめログを更新しました！");
+        setForm(getInitialFormState());
       } else {
         await addMamelog(form);
         toast.success("まめログの登録が完了しました！");
+        setForm(getInitialFormState());
       }
       onSuccess?.();
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
