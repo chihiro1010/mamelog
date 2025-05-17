@@ -60,10 +60,10 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
 
   if (!mamelogs || mamelogs.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-72 my-8 text-gray-500">
-        <Coffee className="w-16 h-16 mb-4 text-brown-400" />
-        <div className="text-lg font-medium mb-2">
-          マメログが未登録のようです。
+      <div className="flex flex-col items-center justify-center h-96 my-8 ">
+        <Coffee className="w-16 h-16 mb-8 text-primary/80" />
+        <div className="text-lg font-medium mb-4 text-gray-500">
+          まめログが未登録のようです
         </div>
         <div className="text-m text-gray-400">
           右下の
@@ -72,7 +72,7 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
               <SquarePen size={16} />
             </span>
           </span>
-          ボタンから追加しましょう！
+          ボタンから追加しましょう
         </div>
       </div>
     );
@@ -92,11 +92,11 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
           <div key={item.id}>
             <Popover>
               <PopoverTrigger asChild>
-                <Card className="relative mb-2 rounded-sm cursor-pointer">
+                <Card className="relative mb-2 rounded-sm cursor-pointer py-4">
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="absolute top-2 right-4 h-8 w-8 rounded-full text-gray-500 hover:bg-gray-100"
+                    className="absolute top-2 right-4 h-8 w-8 rounded-full text-primary/60 hover:bg-gray-100"
                     onClick={() => {
                       setEditingItem(item); // 対象を設定
                       setOpen(true); // フォームを開く
@@ -106,7 +106,7 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
                   </Button>
                   <CardHeader>
                     <CardTitle>{item.shop_name}</CardTitle>
-                    <CardDescription className="mt-2">
+                    <CardDescription className="mt-1">
                       {item.country_name}
                       {item.country_name && item.farm ? " / " : ""}
                       {item.farm}
@@ -124,7 +124,7 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute bottom-2 right-4 h-8 w-8 rounded-full text-red-500 hover:bg-gray-100"
+                        className="absolute bottom-2 right-4 h-8 w-8 rounded-full text-gray-400 hover:bg-gray-100"
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>

@@ -19,6 +19,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from "@/components/ui/dialog";
 import { toast, Toaster } from "sonner";
 import { Button } from "./ui/button";
@@ -45,6 +46,7 @@ import {
   Save,
   Weight,
   Loader2,
+  Calendar,
 } from "lucide-react";
 interface Props {
   onSuccess?: () => void;
@@ -87,6 +89,7 @@ export default function PostForm({
     shop_name: false,
     country_name: false,
     roast_level: false,
+    purchase_date: false,
   });
   const [loading, setLoading] = useState(false);
   const handleChange = (
@@ -113,6 +116,7 @@ export default function PostForm({
       shop_name: form.shop_name.trim() === "",
       country_name: form.country_name.trim() === "",
       roast_level: form.roast_level.trim() === "",
+      purchase_date: form.purchase_date.trim() === "",
     };
     setErrors(newErrors);
 
@@ -167,21 +171,46 @@ export default function PostForm({
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
         <DialogContent className="w-[90%] max-w-2xl max-h-[80vh] flex flex-col">
           <DialogHeader>
-            <DialogTitle>
+            <DialogTitle className="text-primary/70 font-bold mb-2">
               {initialData ? "まめログを編集" : "まめログを登録"}
             </DialogTitle>
           </DialogHeader>
           <div className="overflow-y-auto flex-1 min-h-0">
             <form
+              id="mamelog-form"
               onSubmit={handleSubmit}
               className="space-y-5 overflow-y-auto flex-1 min-h-0 pr-4"
             >
               <div>
                 <Label
-                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  className="mb-2 text-gray-500 flex items-center gap-2"
+                  htmlFor="purchase_date"
+                >
+                  <Calendar className="w-4 h-4 mb-0.5 text-primary/80" />
+                  購入日<span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="purchase_date"
+                  name="purchase_date"
+                  type="date"
+                  value={form.purchase_date.slice(0, 10)}
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      purchase_date: e.target.value,
+                    }))
+                  }
+                  className={`border p-2 w-full ${
+                    errors.purchase_date ? "border-red-500" : ""
+                  }`}
+                />
+              </div>
+              <div>
+                <Label
+                  className="mb-2 text-gray-500 flex items-center gap-2"
                   htmlFor="shop_name"
                 >
-                  <Store className="w-5 h-5 text-primary" />
+                  <Store className="w-4 h-4 mb-0.5 text-primary/80" />
                   ショップ<span className="text-red-500">*</span>
                 </Label>
                 <div className="relative">
@@ -204,10 +233,10 @@ export default function PostForm({
 
               <div>
                 <Label
-                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  className="mb-2 text-gray-500 flex items-center gap-2"
                   htmlFor="country_name"
                 >
-                  <Globe className="w-5 h-5 text-primary" />
+                  <Globe className="w-4 h-4 mb-0.5 text-primary/80" />
                   生産国<span className="text-red-500">*</span>
                 </Label>
                 <Select
@@ -235,10 +264,10 @@ export default function PostForm({
 
               <div>
                 <Label
-                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  className="mb-2 text-gray-500 flex items-center gap-2"
                   htmlFor="roast_level"
                 >
-                  <Flame className="w-5 h-5 text-primary" />
+                  <Flame className="w-4 h-4 mb-0.5 text-primary/80" />
                   焙煎度<span className="text-red-500">*</span>
                 </Label>
                 <Select
@@ -262,10 +291,33 @@ export default function PostForm({
 
               <div>
                 <Label
-                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  className="mb-2 text-gray-500 flex items-center gap-2"
+                  htmlFor="roast_date"
+                >
+                  <Calendar className="w-4 h-4 mb-0.5 text-primary/80" />
+                  焙煎日
+                </Label>
+                <Input
+                  id="roast_date"
+                  name="roast_date"
+                  type="date"
+                  value={form.roast_date.slice(0, 10)} // YYYY-MM-DD だけを表示
+                  onChange={(e) =>
+                    setForm((prev) => ({
+                      ...prev,
+                      roast_date: e.target.value,
+                    }))
+                  }
+                  className="border p-2 w-full"
+                />
+              </div>
+
+              <div>
+                <Label
+                  className="mb-2 text-gray-500 flex items-center gap-2"
                   htmlFor="generation"
                 >
-                  <Sparkles className="w-5 h-5 text-primary" />
+                  <Sparkles className="w-4 h-4 mb-0.5  text-primary/80" />
                   精製方法
                 </Label>
                 <Select
@@ -289,10 +341,10 @@ export default function PostForm({
 
               <div>
                 <Label
-                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  className="mb-2 text-gray-500 flex items-center gap-2"
                   htmlFor="farm"
                 >
-                  <Sprout className="w-5 h-5 text-primary" />
+                  <Sprout className="w-4 h-4 mb-0.5 text-primary/80" />
                   農園
                 </Label>
                 <div className="relative">
@@ -310,13 +362,49 @@ export default function PostForm({
                   </span>
                 </div>
               </div>
-
               <div>
                 <Label
-                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  className="mb-2 text-gray-500 flex items-center gap-2"
+                  htmlFor="volume"
+                >
+                  <Weight className="w-4 h-4 mb-0.5 text-primary/80" />
+                  内容量（グラム）
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="volume"
+                    name="volume"
+                    type="number"
+                    placeholder="内容量"
+                    value={form.volume}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // 5桁制限＋空文字の場合は0、それ以外は数値変換
+                      if (val.length <= 5) {
+                        setForm((prev) => ({
+                          ...prev,
+                          volume:
+                            val === "" ? 0 : Number(val.replace(/[^0-9]/g, "")),
+                        }));
+                      }
+                    }}
+                    className="border p-2 w-full pr-16"
+                    maxLength={5}
+                    max={99999}
+                    inputMode="numeric"
+                    pattern="\d*"
+                  />
+                  <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                    {form.volume ? String(form.volume).length : 0}/5
+                  </span>
+                </div>
+              </div>
+              <div>
+                <Label
+                  className="mb-2 text-gray-500 flex items-center gap-2"
                   htmlFor="price"
                 >
-                  <BadgeJapaneseYen className="w-5 h-5 text-primary" />
+                  <BadgeJapaneseYen className="w-4 h-4 mb-0.5 text-primary/80" />
                   価格
                 </Label>
                 <div className="relative">
@@ -349,46 +437,8 @@ export default function PostForm({
                 </div>
               </div>
 
-              <div>
-                <Label
-                  className="mb-2 text-gray-600 flex items-center gap-2"
-                  htmlFor="volume"
-                >
-                  <Weight className="w-5 h-5 text-primary" />
-                  内容量
-                </Label>
-                <div className="relative">
-                  <Input
-                    id="volume"
-                    name="volume"
-                    type="number"
-                    placeholder="内容量"
-                    value={form.volume}
-                    onChange={(e) => {
-                      const val = e.target.value;
-                      // 5桁制限＋空文字の場合は0、それ以外は数値変換
-                      if (val.length <= 5) {
-                        setForm((prev) => ({
-                          ...prev,
-                          volume:
-                            val === "" ? 0 : Number(val.replace(/[^0-9]/g, "")),
-                        }));
-                      }
-                    }}
-                    className="border p-2 w-full pr-16"
-                    maxLength={5}
-                    max={99999}
-                    inputMode="numeric"
-                    pattern="\d*"
-                  />
-                  <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
-                    {form.volume ? String(form.volume).length : 0}/5
-                  </span>
-                </div>
-              </div>
-
               <Collapsible open={isDetailsOpen} onOpenChange={setisDetailsOpen}>
-                <CollapsibleTrigger className="flex items-center space-x-2 text-sm text-gray-600 hover:underline">
+                <CollapsibleTrigger className="flex items-center space-x-2 text-sm text-primary/80 hover:underline">
                   {isDetailsOpen ? (
                     <ChevronDown size={16} />
                   ) : (
@@ -399,10 +449,10 @@ export default function PostForm({
                 <CollapsibleContent className="mt-4 space-y-4">
                   <div>
                     <Label
-                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      className="mb-2 text-gray-500 flex items-center gap-2"
                       htmlFor="product_name"
                     >
-                      <Tag className="w-5 h-5 text-primary" />
+                      <Tag className="w-4 h-4 mb-0.5 text-primary/80" />
                       商品名
                     </Label>
                     <div className="relative">
@@ -420,13 +470,13 @@ export default function PostForm({
                       </span>
                     </div>
                   </div>
-                  {/* 地区名 */}
+
                   <div>
                     <Label
-                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      className="mb-2 text-gray-500 flex items-center gap-2"
                       htmlFor="district_name"
                     >
-                      <MapPin className="w-5 h-5 text-primary" />
+                      <MapPin className="w-4 h-4 mb-0.5 text-primary/80" />
                       地区名
                     </Label>
                     <div className="relative">
@@ -444,13 +494,13 @@ export default function PostForm({
                       </span>
                     </div>
                   </div>
-                  {/* フレーバー */}
+
                   <div>
                     <Label
-                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      className="mb-2 text-gray-500 flex items-center gap-2"
                       htmlFor="flavor"
                     >
-                      <Flower className="w-5 h-5 text-primary" />
+                      <Flower className="w-4 h-4 mb-0.5 text-primary/80" />
                       フレーバー
                     </Label>
                     <div className="relative">
@@ -468,13 +518,13 @@ export default function PostForm({
                       </span>
                     </div>
                   </div>
-                  {/* コメント */}
+
                   <div>
                     <Label
-                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      className="mb-2 text-gray-500 flex items-center gap-2"
                       htmlFor="comment"
                     >
-                      <MessageSquareText className="w-5 h-5 text-primary" />
+                      <MessageSquareText className="w-4 h-4 mb-0.5 text-primary/80" />
                       コメント
                     </Label>
                     <div className="relative">
@@ -491,30 +541,55 @@ export default function PostForm({
                         {form.comment.length}/300
                       </span>
                     </div>
-                  </div>{" "}
+                  </div>
+
+                  <div>
+                    <Label
+                      className="mb-2 text-gray-500 flex items-center gap-2"
+                      htmlFor="exp_date"
+                    >
+                      <Calendar className="w-4 h-4 mb-0.5 text-primary/80" />
+                      賞味期限
+                    </Label>
+                    <Input
+                      id="exp_date"
+                      name="exp_date"
+                      type="date"
+                      value={form.exp_date.slice(0, 10)}
+                      onChange={(e) =>
+                        setForm((prev) => ({
+                          ...prev,
+                          exp_date: e.target.value,
+                        }))
+                      }
+                      className="border p-2 w-full"
+                    />
+                  </div>
                 </CollapsibleContent>
               </Collapsible>
-
-              <Button
-                type="submit"
-                className="py-2 w-full rounded flex items-center justify-center gap-2"
-                disabled={loading}
-              >
-                {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                ) : (
-                  <Save className="w-5 h-5" />
-                )}
-                {loading
-                  ? initialData
-                    ? "更新中..."
-                    : "登録中..."
-                  : initialData
-                  ? "更新する"
-                  : "登録する"}
-              </Button>
             </form>
           </div>
+          <DialogFooter>
+            <Button
+              type="submit"
+              form="mamelog-form"
+              className="py-2 w-full rounded flex items-center justify-center gap-2"
+              disabled={loading}
+            >
+              {loading ? (
+                <Loader2 className="w-4 h-4 mb-0.5 animate-spin" />
+              ) : (
+                <Save className="w-4 h-4" />
+              )}
+              {loading
+                ? initialData
+                  ? "更新中..."
+                  : "登録中..."
+                : initialData
+                ? "更新する"
+                : "登録する"}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
