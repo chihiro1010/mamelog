@@ -29,8 +29,23 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 
-import { ChevronDown, ChevronRight } from "lucide-react";
-
+import {
+  Store,
+  Globe,
+  Flame,
+  BadgeJapaneseYen,
+  Sparkles,
+  Sprout,
+  MapPin,
+  Tag,
+  Flower,
+  MessageSquareText,
+  ChevronDown,
+  ChevronRight,
+  Save,
+  Weight,
+  Loader2,
+} from "lucide-react";
 interface Props {
   onSuccess?: () => void;
   isOpen?: boolean;
@@ -73,7 +88,7 @@ export default function PostForm({
     country_name: false,
     roast_level: false,
   });
-
+  const [loading, setLoading] = useState(false);
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -106,7 +121,7 @@ export default function PostForm({
       toast.error("必須項目をすべて入力してください");
       return;
     }
-
+    setLoading(true);
     try {
       if (initialData && initialData.id) {
         await setMamelog(initialData.id, form);
@@ -121,6 +136,8 @@ export default function PostForm({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
       toast.error("保存に失敗しました。もう一度お試しください。");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -148,230 +165,356 @@ export default function PostForm({
     <>
       <Toaster position="top-right" richColors />
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="w-[90%] max-w-2xl h-auto overflow-y-auto">
+        <DialogContent className="w-[90%] max-w-2xl max-h-[80vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>
-              {" "}
               {initialData ? "まめログを編集" : "まめログを登録"}
             </DialogTitle>
           </DialogHeader>
-
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <Label className="mb-2 text-gray-600" htmlFor="shop_name">
-                ショップ<span className="text-red-500">*</span>
-              </Label>
-              <Input
-                id="shop_name"
-                name="shop_name"
-                placeholder="購入店舗"
-                value={form.shop_name}
-                onChange={handleChange}
-                className={`border p-2 w-full ${
-                  errors.shop_name ? "border-red-500" : ""
-                }`}
-              />
-            </div>
-
-            <div>
-              <Label className="mb-2 text-gray-600" htmlFor="country_name">
-                生産国<span className="text-red-500">*</span>
-              </Label>
-              <Select
-                value={form.country_name}
-                onValueChange={(value) =>
-                  setForm((prev) => ({ ...prev, country_name: value }))
-                }
-              >
-                <SelectTrigger
-                  className={`w-full ${
-                    errors.country_name ? "border-red-500" : ""
-                  }`}
+          <div className="overflow-y-auto flex-1 min-h-0">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-5 overflow-y-auto flex-1 min-h-0 pr-4"
+            >
+              <div>
+                <Label
+                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  htmlFor="shop_name"
                 >
-                  <SelectValue placeholder="国を選択" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mstData.countries.map((country) => (
-                    <SelectItem key={country} value={country}>
-                      {country}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+                  <Store className="w-5 h-5 text-primary" />
+                  ショップ<span className="text-red-500">*</span>
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="shop_name"
+                    name="shop_name"
+                    placeholder="購入店舗"
+                    value={form.shop_name}
+                    onChange={handleChange}
+                    className={`border p-2 w-full pr-16 ${
+                      errors.shop_name ? "border-red-500" : ""
+                    }`}
+                    maxLength={30}
+                  />
+                  <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                    {form.shop_name.length}/30
+                  </span>
+                </div>
+              </div>
 
-            <div>
-              <Label className="mb-2 text-gray-600" htmlFor="roast_level">
-                焙煎度<span className="text-red-500">*</span>
-              </Label>
-              <Select
-                value={form.roast_level}
-                onValueChange={(value) =>
-                  setForm((prev) => ({ ...prev, roast_level: value }))
-                }
-              >
-                <SelectTrigger
-                  className={`w-full ${
-                    errors.country_name ? "border-red-500" : ""
-                  }`}
+              <div>
+                <Label
+                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  htmlFor="country_name"
                 >
-                  <SelectValue placeholder="焙煎度を選択" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mstData.roast_levels_jp.map((level) => (
-                    <SelectItem key={level} value={level}>
-                      {level}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label className="mb-2 text-gray-600" htmlFor="generation">
-                精製方法
-              </Label>
-              <Select
-                value={form.generation}
-                onValueChange={(value) =>
-                  setForm((prev) => ({ ...prev, generation: value }))
-                }
-              >
-                <SelectTrigger
-                  className={`w-full ${
-                    errors.country_name ? "border-red-500" : ""
-                  }`}
+                  <Globe className="w-5 h-5 text-primary" />
+                  生産国<span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={form.country_name}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, country_name: value }))
+                  }
                 >
-                  <SelectValue placeholder="焙煎度を選択" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mstData.generations.map((generation) => (
-                    <SelectItem key={generation} value={generation}>
-                      {generation}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div>
-              <Label className="mb-2 text-gray-600" htmlFor="farm">
-                農園
-              </Label>
-              <Input
-                id="farm"
-                name="farm"
-                placeholder="農園"
-                value={form.farm}
-                onChange={handleChange}
-                className="border p-2 w-full"
-              />
-            </div>
-
-            <div>
-              <Label className="mb-2 text-gray-600" htmlFor="price">
-                価格
-              </Label>
-              <Input
-                id="price"
-                name="price"
-                type="number"
-                placeholder="価格"
-                value={form.price}
-                onChange={handleChange}
-                className="border p-2 w-full"
-              />
-            </div>
-
-            <div>
-              <Label className="mb-2 text-gray-600" htmlFor="volume">
-                内容量
-              </Label>
-              <Input
-                id="volume"
-                name="volume"
-                type="number"
-                placeholder="内容量"
-                value={form.volume}
-                onChange={handleChange}
-                className="border p-2 w-full"
-              />
-            </div>
-
-            <Collapsible open={isDetailsOpen} onOpenChange={setisDetailsOpen}>
-              <CollapsibleTrigger className="flex items-center space-x-2 text-sm text-gray-600 hover:underline">
-                {isDetailsOpen ? (
-                  <ChevronDown size={16} />
-                ) : (
-                  <ChevronRight size={16} />
-                )}
-                <span>詳細項目</span>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-4 space-y-4">
-                <div>
-                  <Label
-                    className="mb-2 text-gray-600 text-gray-600"
-                    htmlFor="product_name"
+                  <SelectTrigger
+                    className={`w-full ${
+                      errors.country_name ? "border-red-500" : ""
+                    }`}
                   >
-                    商品名
-                  </Label>
-                  <Input
-                    id="product_name"
-                    name="product_name"
-                    placeholder="商品名"
-                    value={form.product_name}
-                    onChange={handleChange}
-                    className="border p-2 w-full"
-                  />
-                </div>
-                <div>
-                  <Label className="mb-2 text-gray-600" htmlFor="district_name">
-                    地区名
-                  </Label>
-                  <Input
-                    id="district_name"
-                    name="district_name"
-                    placeholder="地区名"
-                    value={form.district_name}
-                    onChange={handleChange}
-                    className="border p-2 w-full"
-                  />
-                </div>
-                <div>
-                  <Label className="mb-2 text-gray-600" htmlFor="flavor">
-                    フレーバー
-                  </Label>
-                  <Input
-                    id="flavor"
-                    name="flavor"
-                    placeholder="フレーバー"
-                    value={form.flavor}
-                    onChange={handleChange}
-                    className="border p-2 w-full"
-                  />
-                </div>
-                <div>
-                  <Label className="mb-2 text-gray-600" htmlFor="comment">
-                    コメント
-                  </Label>
-                  <Textarea
-                    id="comment"
-                    name="comment"
-                    placeholder="コメント"
-                    value={form.comment}
-                    onChange={handleChange}
-                    className="border p-2 w-full"
-                  />
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
+                    <SelectValue placeholder="国を選択" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mstData.countries.map((country) => (
+                      <SelectItem key={country} value={country}>
+                        {country}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
 
-            <div>
-              <Button type="submit" className="py-2 w-full rounded">
-                {initialData ? "更新する" : "登録する"}
+              <div>
+                <Label
+                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  htmlFor="roast_level"
+                >
+                  <Flame className="w-5 h-5 text-primary" />
+                  焙煎度<span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  value={form.roast_level}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, roast_level: value }))
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="焙煎度を選択" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mstData.roast_levels_jp.map((level) => (
+                      <SelectItem key={level} value={level}>
+                        {level}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label
+                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  htmlFor="generation"
+                >
+                  <Sparkles className="w-5 h-5 text-primary" />
+                  精製方法
+                </Label>
+                <Select
+                  value={form.generation}
+                  onValueChange={(value) =>
+                    setForm((prev) => ({ ...prev, generation: value }))
+                  }
+                >
+                  <SelectTrigger className={`w-full`}>
+                    <SelectValue placeholder="精製方法を選択" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mstData.generations.map((generation) => (
+                      <SelectItem key={generation} value={generation}>
+                        {generation}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <Label
+                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  htmlFor="farm"
+                >
+                  <Sprout className="w-5 h-5 text-primary" />
+                  農園
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="farm"
+                    name="farm"
+                    placeholder="農園"
+                    value={form.farm}
+                    onChange={handleChange}
+                    className="border p-2 w-full pr-16"
+                    maxLength={30}
+                  />
+                  <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                    {form.farm.length}/30
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <Label
+                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  htmlFor="price"
+                >
+                  <BadgeJapaneseYen className="w-5 h-5 text-primary" />
+                  価格
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="price"
+                    name="price"
+                    type="number"
+                    placeholder="価格"
+                    value={form.price}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // 空なら0にする、そうでなければ数値に変換
+                      if (val.length <= 5) {
+                        setForm((prev) => ({
+                          ...prev,
+                          price:
+                            val === "" ? 0 : Number(val.replace(/[^0-9]/g, "")),
+                        }));
+                      }
+                    }}
+                    className="border p-2 w-full pr-16"
+                    maxLength={5}
+                    max={99999}
+                    inputMode="numeric"
+                    pattern="\d*"
+                  />{" "}
+                  <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                    {form.price ? String(form.price).length : 0}/5
+                  </span>
+                </div>
+              </div>
+
+              <div>
+                <Label
+                  className="mb-2 text-gray-600 flex items-center gap-2"
+                  htmlFor="volume"
+                >
+                  <Weight className="w-5 h-5 text-primary" />
+                  内容量
+                </Label>
+                <div className="relative">
+                  <Input
+                    id="volume"
+                    name="volume"
+                    type="number"
+                    placeholder="内容量"
+                    value={form.volume}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // 5桁制限＋空文字の場合は0、それ以外は数値変換
+                      if (val.length <= 5) {
+                        setForm((prev) => ({
+                          ...prev,
+                          volume:
+                            val === "" ? 0 : Number(val.replace(/[^0-9]/g, "")),
+                        }));
+                      }
+                    }}
+                    className="border p-2 w-full pr-16"
+                    maxLength={5}
+                    max={99999}
+                    inputMode="numeric"
+                    pattern="\d*"
+                  />
+                  <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                    {form.volume ? String(form.volume).length : 0}/5
+                  </span>
+                </div>
+              </div>
+
+              <Collapsible open={isDetailsOpen} onOpenChange={setisDetailsOpen}>
+                <CollapsibleTrigger className="flex items-center space-x-2 text-sm text-gray-600 hover:underline">
+                  {isDetailsOpen ? (
+                    <ChevronDown size={16} />
+                  ) : (
+                    <ChevronRight size={16} />
+                  )}
+                  <span>詳細項目</span>
+                </CollapsibleTrigger>
+                <CollapsibleContent className="mt-4 space-y-4">
+                  <div>
+                    <Label
+                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      htmlFor="product_name"
+                    >
+                      <Tag className="w-5 h-5 text-primary" />
+                      商品名
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="product_name"
+                        name="product_name"
+                        placeholder="商品名"
+                        value={form.product_name}
+                        onChange={handleChange}
+                        className="border p-2 w-full pr-16"
+                        maxLength={30}
+                      />
+                      <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                        {form.product_name.length}/30
+                      </span>
+                    </div>
+                  </div>
+                  {/* 地区名 */}
+                  <div>
+                    <Label
+                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      htmlFor="district_name"
+                    >
+                      <MapPin className="w-5 h-5 text-primary" />
+                      地区名
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="district_name"
+                        name="district_name"
+                        placeholder="地区名"
+                        value={form.district_name}
+                        onChange={handleChange}
+                        className="border p-2 w-full pr-16"
+                        maxLength={30}
+                      />
+                      <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                        {form.district_name.length}/30
+                      </span>
+                    </div>
+                  </div>
+                  {/* フレーバー */}
+                  <div>
+                    <Label
+                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      htmlFor="flavor"
+                    >
+                      <Flower className="w-5 h-5 text-primary" />
+                      フレーバー
+                    </Label>
+                    <div className="relative">
+                      <Input
+                        id="flavor"
+                        name="flavor"
+                        placeholder="フレーバー"
+                        value={form.flavor}
+                        onChange={handleChange}
+                        className="border p-2 w-full pr-16"
+                        maxLength={50}
+                      />
+                      <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                        {form.flavor.length}/50
+                      </span>
+                    </div>
+                  </div>
+                  {/* コメント */}
+                  <div>
+                    <Label
+                      className="mb-2 text-gray-600 flex items-center gap-2"
+                      htmlFor="comment"
+                    >
+                      <MessageSquareText className="w-5 h-5 text-primary" />
+                      コメント
+                    </Label>
+                    <div className="relative">
+                      <Textarea
+                        id="comment"
+                        name="comment"
+                        placeholder="コメント"
+                        value={form.comment}
+                        onChange={handleChange}
+                        className="border p-2 w-full pr-16"
+                        maxLength={300}
+                      />
+                      <span className="absolute right-2 bottom-2 text-xs text-gray-400 select-none">
+                        {form.comment.length}/300
+                      </span>
+                    </div>
+                  </div>{" "}
+                </CollapsibleContent>
+              </Collapsible>
+
+              <Button
+                type="submit"
+                className="py-2 w-full rounded flex items-center justify-center gap-2"
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Save className="w-5 h-5" />
+                )}
+                {loading
+                  ? initialData
+                    ? "更新中..."
+                    : "登録中..."
+                  : initialData
+                  ? "更新する"
+                  : "登録する"}
               </Button>
-            </div>
-          </form>
+            </form>
+          </div>
         </DialogContent>
       </Dialog>
     </>
