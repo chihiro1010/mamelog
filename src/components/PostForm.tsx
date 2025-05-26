@@ -169,7 +169,7 @@ export default function PostForm({
     <>
       <Toaster position="top-right" richColors />
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="w-[90%] max-w-2xl max-h-[80vh] flex flex-col">
+        <DialogContent className="w-full max-w-svw max-h-svh flex flex-col">
           <DialogHeader>
             <DialogTitle className="text-primary/70 font-bold mb-2">
               {initialData ? "まめログを編集" : "まめログを登録"}

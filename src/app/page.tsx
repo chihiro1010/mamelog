@@ -63,7 +63,7 @@ export default function Home() {
       />
       <MamelogList mamelogs={mamelogs} onSuccess={loadMamelogs} />
       <Button
-        className="fixed bottom-6 right-6 bg-primary text-white w-13 h-13 rounded-full shadow-lg hover:bg-primary/90 transition"
+        className="fixed bottom-18 right-6 bg-primary text-white w-13 h-13 rounded-full shadow-lg hover:bg-primary/90 transition"
         onClick={() => {
           setOpen(true);
         }}

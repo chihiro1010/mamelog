@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
+import FooterNav from "@/components/FooterNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,9 +33,9 @@ export default function RootLayout({
         <meta name="theme-color" content="#4B3621" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-20`} // フッター分余白を確保
       >
-        <Link className="flex justify-center mt-3" href="/">
+        <Link className="flex justify-center mt-3 pb-3 border-b" href="/">
           <Image
             src="/icons/icon-512x512.png"
             alt="まめログ"
@@ -44,6 +45,8 @@ export default function RootLayout({
           />
         </Link>
         {children}
+
+        <FooterNav></FooterNav>
       </body>
     </html>
   );
