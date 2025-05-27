@@ -39,8 +39,8 @@ export default function RootLayout({
           <Image
             src="/icons/icon-512x512.png"
             alt="まめログ"
-            width={60}
-            height={60}
+            width={40}
+            height={40}
             priority
           />
         </Link>

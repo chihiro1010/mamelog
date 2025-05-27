@@ -10,7 +10,6 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SquarePen } from "lucide-react";
 import { Mamelog } from "@/types/mamelog";
-import LogoutButton from "@/components/LogoutButton";
 
 export default function Home() {
   const [mamelogs, setMamelogs] = useState<Mamelog[]>([]);
@@ -49,9 +48,6 @@ export default function Home() {
 
   return (
     <div className="p-4">
-      <div className="absolute top-6 right-2">
-        <LogoutButton></LogoutButton>
-      </div>
       <LoginChecker />
       <PostForm
         onSuccess={() => {

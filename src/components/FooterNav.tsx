@@ -1,6 +1,6 @@
 "use client";
 
-import { Home } from "lucide-react";
+import { Home, User } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { toast } from "sonner";
@@ -24,11 +24,11 @@ export default function FooterNav() {
       enabled: true,
     },
     {
-      label: "工事中",
-      href: "#",
-      icon: <span className="text-2xl">-</span>,
-      match: /^\/profile/,
-      enabled: false,
+      label: "アカウント",
+      href: "/account",
+      icon: <User size={24} />,
+      match: /^\/account/,
+      enabled: true,
     },
   ];
 
