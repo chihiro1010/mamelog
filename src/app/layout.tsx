@@ -1,9 +1,11 @@
+/* eslint-disable @next/next/next-script-for-ga */
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import FooterNav from "@/components/FooterNav";
+import Analytics from "@/components/Analytics";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,6 +30,21 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
+        {/* Google Analytics */}
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-EQGH0WDSTD"
+        ></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-EQGH0WDSTD', { page_path: window.location.pathname });
+            `,
+          }}
+        />
         <link rel="manifest" href="/manifest.json" />
         <link rel="icon" href="/icons/icon-192x192.png" />
         <meta name="theme-color" content="#4B3621" />
@@ -35,6 +52,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased pb-20`} // フッター分余白を確保
       >
+        <Analytics />
         <Link className="flex justify-center mt-3 pb-3 border-b" href="/">
           <Image
             src="/icons/icon-512x512.png"
