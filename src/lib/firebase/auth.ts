@@ -7,17 +7,18 @@ import {
   signInWithPopup,
   GoogleAuthProvider,
   User,
+  deleteUser,
 } from "firebase/auth";
 import { auth } from "./firebase";
 
 // メールアドレスとパスワードで登録
 export const register = (email: string, password: string) => {
-  return createUserWithEmailAndPassword(auth, email, password);
+  return createUserWithEmailAndPassword(auth, email.trim(), password);
 };
 
 // メールアドレスとパスワードでログイン
 export const login = (email: string, password: string) => {
-  return signInWithEmailAndPassword(auth, email, password);
+  return signInWithEmailAndPassword(auth, email.trim(), password);
 };
 
 // 匿名ログイン（ゲストログイン）
@@ -34,6 +35,14 @@ export const googleLogin = () => {
 // ログアウト
 export const logout = () => {
   return signOut(auth);
+};
+
+export const deleteCurrentUser = async () => {
+  if (!auth.currentUser) {
+    throw new Error("ログインユーザーが存在しません");
+  }
+
+  await deleteUser(auth.currentUser);
 };
 
 // 認証状態の監視
