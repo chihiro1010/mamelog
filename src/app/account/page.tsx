@@ -47,14 +47,30 @@ export default function AccountPage() {
 
     setDeleteLoading(true);
     try {
-      await deleteMamelogsByUser(user.uid);
+      const uid = user.uid;
+
+      // 先にAuthアカウント削除を実施し、再認証要求時のデータ消失を防ぐ
       await deleteCurrentUser();
+
+      try {
+        await deleteMamelogsByUser(uid);
+      } catch {
+        toast.warning("アカウントは削除されましたが、まめログ削除に失敗しました");
+      }
+
       toast.success("アカウントを削除しました");
       router.replace("/welcome");
-    } catch {
-      toast.error(
-        "アカウント削除に失敗しました。再ログイン後にもう一度お試しください。"
-      );
+    } catch (error: unknown) {
+      const code =
+        typeof error === "object" && error !== null && "code" in error
+          ? String((error as { code?: string }).code)
+          : "";
+
+      if (code === "auth/requires-recent-login") {
+        toast.error("セキュリティ確認のため、再ログイン後にもう一度お試しください");
+      } else {
+        toast.error("アカウント削除に失敗しました。時間をおいて再度お試しください。");
+      }
     } finally {
       setDeleteLoading(false);
       setConfirmText("");
