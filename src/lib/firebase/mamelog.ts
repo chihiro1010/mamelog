@@ -8,6 +8,7 @@ import {
   where,
   deleteDoc,
   doc,
+  writeBatch,
 } from "firebase/firestore";
 import db from "@/lib/firebase/firebase";
 import { Mamelog } from "@/types/mamelog";
@@ -19,12 +20,12 @@ export const fetchMamelogs = async (userId: string): Promise<Mamelog[]> => {
   );
   const snap = await getDocs(q);
 
-  return snap.docs.map((doc) => {
-    const data = doc.data();
+  return snap.docs.map((docSnap) => {
+    const data = docSnap.data();
 
     return {
       ...data,
-      id: doc.id,
+      id: docSnap.id,
       create_at: data.create_at.toDate().toISOString(),
       update_at: data.update_at.toDate().toISOString(),
       exp_date: data.exp_date.toDate().toISOString(),
@@ -59,7 +60,7 @@ export async function setMamelog(id: string, data: Mamelog) {
       update_at: Timestamp.now(),
     },
     { merge: true }
-  ); // merge: true で既存フィールドを残す
+  );
 }
 
 export const deleteMamelog = async (id: string) => {
@@ -68,4 +69,16 @@ export const deleteMamelog = async (id: string) => {
   } catch (error) {
     console.error("削除エラー:", error);
   }
+};
+
+export const deleteMamelogsByUser = async (userId: string) => {
+  const q = query(collection(db, "mamelog"), where("regist_user", "==", userId));
+  const snap = await getDocs(q);
+
+  const batch = writeBatch(db);
+  snap.docs.forEach((docSnap) => {
+    batch.delete(doc(db, "mamelog", docSnap.id));
+  });
+
+  await batch.commit();
 };
