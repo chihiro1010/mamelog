@@ -58,7 +58,7 @@ interface Props {
 
 const today = () => new Date().toISOString().slice(0, 10);
 const volumePresets = [100, 150, 200, 250];
-const pricePresets = [1000, 1500, 2000, 2500];
+const pricePresets = [600, 800, 1000, 1500, 2000];
 
 const getInitialFormState = () => ({
   id: "",
@@ -373,7 +373,7 @@ export default function PostForm({
               </section>
 
               <section className="space-y-3">
-                <p className={sectionTitleClass}>任意項目（よく使う）</p>
+                <p className={sectionTitleClass}>詳細項目</p>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="col-span-2 sm:col-span-1">
@@ -429,7 +429,7 @@ export default function PostForm({
 
               <Collapsible open={isNicheOpen} onOpenChange={setIsNicheOpen}>
                 <CollapsibleTrigger className="flex w-full items-center justify-between rounded-xl bg-muted/40 px-4 py-3 text-sm font-semibold text-primary/90 hover:bg-muted/70 transition">
-                  <span>ニッチ設定（こだわり入力）</span>
+                  <span>ニッチ項目</span>
                   {isNicheOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-3 space-y-4">
