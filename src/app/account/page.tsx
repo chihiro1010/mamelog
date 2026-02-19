@@ -21,13 +21,19 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
-import { Loader2, TriangleAlert } from "lucide-react";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import { ChevronDown, Loader2, TriangleAlert } from "lucide-react";
 
 export default function AccountPage() {
   const router = useRouter();
   const { user, loading } = useAuth();
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [confirmText, setConfirmText] = useState("");
+  const [dangerOpen, setDangerOpen] = useState(false);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -49,7 +55,6 @@ export default function AccountPage() {
     try {
       const uid = user.uid;
 
-      // 先にAuthアカウント削除を実施し、再認証要求時のデータ消失を防ぐ
       await deleteCurrentUser();
 
       try {
@@ -79,7 +84,7 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-[60vh]">
+      <div className="flex h-[60vh] items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-gray-600" />
       </div>
     );
@@ -90,7 +95,7 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="max-w-md mx-auto p-4 space-y-4">
+    <main className="mx-auto max-w-md space-y-4 p-4">
       <Toaster position="top-right" richColors />
 
       <Card>
@@ -106,13 +111,26 @@ export default function AccountPage() {
         </CardContent>
       </Card>
 
-      <Card className="border-red-200">
-        <CardHeader>
-          <CardTitle className="text-base text-red-700 flex items-center gap-2">
-            <TriangleAlert className="h-4 w-4" /> 危険な操作
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
+      <Collapsible
+        open={dangerOpen}
+        onOpenChange={setDangerOpen}
+        className="rounded-xl border border-red-200 bg-card p-4"
+      >
+        <CollapsibleTrigger asChild>
+          <button
+            type="button"
+            className="flex w-full items-center justify-between text-left text-base text-red-700"
+          >
+            <span className="flex items-center gap-2 font-semibold">
+              <TriangleAlert className="h-4 w-4" /> 危険な操作
+            </span>
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${dangerOpen ? "rotate-180" : ""}`}
+            />
+          </button>
+        </CollapsibleTrigger>
+
+        <CollapsibleContent className="pt-4">
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button variant="destructive" className="w-full">
@@ -138,17 +156,14 @@ export default function AccountPage() {
                 <AlertDialogCancel onClick={() => setConfirmText("")}>
                   キャンセル
                 </AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDeleteAccount}
-                  disabled={deleteLoading}
-                >
+                <AlertDialogAction onClick={handleDeleteAccount} disabled={deleteLoading}>
                   {deleteLoading ? "削除中..." : "削除する"}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>
           </AlertDialog>
-        </CardContent>
-      </Card>
+        </CollapsibleContent>
+      </Collapsible>
     </main>
   );
 }

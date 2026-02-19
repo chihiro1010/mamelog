@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 
-export default function LoginChecker() {
+export default function LogoutChecker() {
   const { user, loading } = useAuth();
   const router = useRouter();
 
