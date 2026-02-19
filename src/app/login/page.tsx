@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
-import { Loader2 } from "lucide-react";
+import { Coffee, Loader2 } from "lucide-react";
+import LogoutChecker from "@/components/LogoutChecker";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -38,12 +39,19 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="max-w-md mx-auto p-4">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-xl">ログイン</CardTitle>
+    <main className="px-4 pb-8 pt-6">
+      <LogoutChecker />
+      <Card className="overflow-hidden rounded-2xl border-primary/20">
+        <CardHeader className="bg-gradient-to-r from-primary/95 to-[#8b5e3c] py-5 text-primary-foreground">
+          <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20">
+            <Coffee className="h-5 w-5" />
+          </div>
+          <CardTitle className="text-2xl">ログイン</CardTitle>
+          <p className="text-sm text-primary-foreground/85">
+            お気に入りのコーヒー記録を、いつでも見返せます。
+          </p>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-5">
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
@@ -70,7 +78,7 @@ export default function LoginPage() {
 
             {error && <p className="text-sm text-red-600">{error}</p>}
 
-            <Button type="submit" className="w-full" disabled={submitting}>
+            <Button type="submit" className="h-11 w-full" disabled={submitting}>
               {submitting ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> ログイン中...
@@ -80,9 +88,9 @@ export default function LoginPage() {
               )}
             </Button>
 
-            <p className="text-sm text-muted-foreground text-center">
+            <p className="text-center text-sm text-muted-foreground">
               アカウントをお持ちでない場合は{" "}
-              <Link href="/signup" className="text-primary underline underline-offset-4">
+              <Link href="/signup" className="font-medium text-primary underline underline-offset-4">
                 新規登録
               </Link>
             </p>

@@ -1,48 +1,71 @@
 "use client";
 
-import { Home, User } from "lucide-react";
+import { Home, LogIn, User, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function FooterNav() {
   const pathname = usePathname();
+  const { user } = useAuth();
 
-  const navItems = [
-    {
-      label: "ホーム",
-      href: "/",
-      icon: <Home size={24} />,
-      match: /^\/$/,
-      enabled: true,
-    },
-    {
-      label: "アカウント",
-      href: "/account",
-      icon: <User size={24} />,
-      match: /^\/account/,
-      enabled: true,
-    },
-  ];
+  if (/^\/(login|signup)$/.test(pathname)) {
+    return null;
+  }
+
+  const navItems = user
+    ? [
+        {
+          label: "ホーム",
+          href: "/",
+          icon: <Home size={22} />,
+          match: /^\/$/,
+        },
+        {
+          label: "アカウント",
+          href: "/account",
+          icon: <User size={22} />,
+          match: /^\/account/,
+        },
+      ]
+    : [
+        {
+          label: "ログイン",
+          href: "/login",
+          icon: <LogIn size={22} />,
+          match: /^\/login/,
+        },
+        {
+          label: "新規登録",
+          href: "/signup",
+          icon: <UserPlus size={22} />,
+          match: /^\/signup/,
+        },
+      ];
 
   return (
-    <nav className="fixed bottom-0 left-0 w-full z-50 bg-white border-t-1 border-border shadow-lg">
-      <ul className="flex justify-around items-center h-13">
-        {navItems.map((item, i) => {
+    <nav className="fixed bottom-0 left-0 z-50 w-full border-t border-border/90 bg-background/95 backdrop-blur-lg">
+      <ul className="mx-auto flex h-14 max-w-md items-center justify-around">
+        {navItems.map((item) => {
           const isActive = item.match.test(pathname);
           return (
-            <li key={i} className="flex-1">
+            <li key={item.href} className="flex-1">
               <Link
                 href={item.href}
-                className={`flex flex-col items-center justify-center py-1 transition
-                  ${
-                    isActive
-                      ? "border-t-3 border-[#5c2e13] text-[#5c2e13] bg-transparent font-bold"
-                      : "border-t-3 border-transparent text-muted-foreground bg-transparent"
-                  }
-                  hover:bg-accent/20 active:bg-accent/30`}
+                className={`flex flex-col items-center justify-center py-1.5 transition ${
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
               >
-                <span className="mb-1">{item.icon}</span>
-                <span className="text-xs">{item.label}</span>
+                <span
+                  className={`mb-0.5 rounded-full p-1.5 ${
+                    isActive ? "bg-primary/12" : "bg-transparent"
+                  }`}
+                >
+                  {item.icon}
+                </span>
+                <span className="text-[11px] font-medium tracking-wide">{item.label}</span>
               </Link>
             </li>
           );
