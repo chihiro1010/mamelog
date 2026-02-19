@@ -9,6 +9,10 @@ export default function FooterNav() {
   const pathname = usePathname();
   const { user } = useAuth();
 
+  if (/^\/(login|signup)$/.test(pathname)) {
+    return null;
+  }
+
   const navItems = user
     ? [
         {

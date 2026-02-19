@@ -55,13 +55,6 @@ export default function Home() {
 
   return (
     <div className="space-y-4 px-4 pb-6 pt-4">
-      <section className="rounded-xl border border-border/70 bg-card p-4">
-        <h1 className="text-xl font-semibold tracking-tight">ホーム</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          いつもの一杯を、買った豆からていねいに記録しましょう。
-        </p>
-      </section>
-
       <PostForm
         onSuccess={() => {
           setOpen(false);
