@@ -9,6 +9,7 @@ const withPWA = require("next-pwa")({
 module.exports = withPWA({
   reactStrictMode: true,
   output: "export", // 静的エクスポート設定
+  trailingSlash: true, // Firebase Hostingでの直アクセス時に404を避ける
   images: {
     unoptimized: true, // 画像最適化を無効化
   },

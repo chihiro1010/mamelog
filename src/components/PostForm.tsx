@@ -23,7 +23,6 @@ import {
 } from "@/components/ui/dialog";
 import { toast, Toaster } from "sonner";
 import { Button } from "./ui/button";
-import { getAuth } from "firebase/auth";
 import {
   Collapsible,
   CollapsibleContent,
@@ -48,6 +47,7 @@ import {
   Calendar,
   Info,
 } from "lucide-react";
+import { auth } from "@/lib/firebase/firebase";
 
 interface Props {
   onSuccess?: () => void;
@@ -59,6 +59,16 @@ interface Props {
 const today = () => new Date().toISOString().slice(0, 10);
 const volumePresets = [100, 150, 200, 250];
 const pricePresets = [600, 800, 1000, 1500, 2000];
+const majorCountryPresets = [
+  "エチオピア",
+  "コロンビア",
+  "ブラジル",
+  "グアテマラ",
+  "ケニア",
+  "インドネシア",
+  "コスタリカ",
+  "パナマ",
+];
 
 const getInitialFormState = () => ({
   id: "",
@@ -74,7 +84,7 @@ const getInitialFormState = () => ({
   is_blend: false,
   price: 0,
   purchase_date: today(),
-  regist_user: getAuth().currentUser?.uid || "",
+  regist_user: auth?.currentUser?.uid || "",
   roast_date: "",
   roast_level: mstData.roast_levels_jp[2],
   shop_name: "",
@@ -181,8 +191,7 @@ export default function PostForm({
   };
 
   useEffect(() => {
-    const auth = getAuth();
-    const user = auth.currentUser;
+    const user = auth?.currentUser;
 
     if (!initialData) {
       setForm({ ...getInitialFormState(), regist_user: user?.uid || "" });
@@ -204,8 +213,8 @@ export default function PostForm({
     <>
       <Toaster position="top-right" richColors />
       <Dialog open={isOpen} onOpenChange={onOpenChange}>
-        <DialogContent className="w-full max-w-[560px] max-h-[92svh] flex flex-col gap-0 p-0 overflow-hidden">
-          <DialogHeader className="px-5 pt-5 pb-3">
+        <DialogContent className="h-[100svh] w-full max-w-none flex flex-col gap-0 rounded-none border-0 p-0 sm:h-auto sm:max-h-[92svh] sm:max-w-[560px] sm:rounded-2xl sm:border overflow-hidden">
+          <DialogHeader className="px-5 pt-6 pb-4 border-b bg-background/95">
             <DialogTitle className="text-primary font-bold text-xl">
               {initialData ? "まめログを編集" : "まめログを登録"}
             </DialogTitle>
@@ -214,12 +223,12 @@ export default function PostForm({
             </p>
           </DialogHeader>
 
-          <div className="overflow-y-auto px-5 pb-4">
-            <form id="mamelog-form" onSubmit={handleSubmit} className="space-y-5">
-              <section className="space-y-3">
+          <div className="flex-1 overflow-y-auto px-5 pb-6">
+            <form id="mamelog-form" onSubmit={handleSubmit} className="space-y-7 pt-5">
+              <section className="space-y-4 rounded-2xl border bg-card p-4 sm:p-5">
                 <p className={sectionTitleClass}>基本項目</p>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 sm:col-span-1">
                     <Label className="mb-2 text-gray-700 flex items-center gap-2" htmlFor="purchase_date">
                       <Calendar className="w-4 h-4 text-primary/80" />
@@ -249,7 +258,7 @@ export default function PostForm({
                       value={form.volume === 0 ? "" : String(form.volume)}
                       onChange={(e) => handleNumberChange("volume", e.target.value)}
                     />
-                    <div className="flex gap-2 mt-2 flex-wrap">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {volumePresets.map((preset) => (
                         <button
                           key={preset}
@@ -285,7 +294,7 @@ export default function PostForm({
                   <p className="text-right text-xs text-gray-400 mt-1">{form.shop_name.length}/30</p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 sm:col-span-1">
                     <Label className="mb-2 text-gray-700 flex items-center gap-2" htmlFor="country_name">
                       <Globe className="w-4 h-4 text-primary/80" />
@@ -309,6 +318,25 @@ export default function PostForm({
                         ))}
                       </SelectContent>
                     </Select>
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {majorCountryPresets.map((country) => (
+                        <button
+                          key={country}
+                          type="button"
+                          onClick={() => {
+                            setForm((prev) => ({ ...prev, country_name: country }));
+                            setErrors((prev) => ({ ...prev, country_name: false }));
+                          }}
+                          className={`rounded-full px-3 py-1.5 text-xs transition ${
+                            form.country_name === country
+                              ? "bg-primary text-white"
+                              : "bg-muted text-muted-foreground hover:bg-muted/70"
+                          }`}
+                        >
+                          {country}
+                        </button>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="col-span-2 sm:col-span-1">
@@ -325,7 +353,7 @@ export default function PostForm({
                       value={form.price === 0 ? "" : String(form.price)}
                       onChange={(e) => handleNumberChange("price", e.target.value)}
                     />
-                    <div className="flex gap-2 mt-2 flex-wrap">
+                    <div className="mt-2 flex flex-wrap gap-2">
                       {pricePresets.map((preset) => (
                         <button
                           key={preset}
@@ -344,12 +372,12 @@ export default function PostForm({
                   </div>
                 </div>
 
-                <div>
+                <div className="space-y-2">
                   <Label className="mb-2 text-gray-700 flex items-center gap-2" htmlFor="roast_level">
                     <Flame className="w-4 h-4 text-primary/80" />
                     焙煎度<span className="text-red-500">*</span>
                   </Label>
-                  <div className="rounded-xl bg-muted/45 px-3 py-3">
+                  <div className="rounded-xl bg-muted/45 px-3 py-4">
                     <input
                       id="roast_level"
                       type="range"
@@ -372,10 +400,10 @@ export default function PostForm({
                 </div>
               </section>
 
-              <section className="space-y-3">
+              <section className="space-y-4 rounded-2xl border bg-card p-4 sm:p-5">
                 <p className={sectionTitleClass}>詳細項目</p>
 
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-4">
                   <div className="col-span-2 sm:col-span-1">
                     <Label className="mb-2 text-gray-700 flex items-center gap-2" htmlFor="roast_date">
                       <Calendar className="w-4 h-4 text-primary/80" /> 焙煎日
@@ -428,11 +456,11 @@ export default function PostForm({
               </section>
 
               <Collapsible open={isNicheOpen} onOpenChange={setIsNicheOpen}>
-                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-xl bg-muted/40 px-4 py-3 text-sm font-semibold text-primary/90 hover:bg-muted/70 transition">
+                <CollapsibleTrigger className="flex w-full items-center justify-between rounded-xl border bg-muted/30 px-4 py-3 text-sm font-semibold text-primary/90 transition hover:bg-muted/70">
                   <span>ニッチ項目</span>
                   {isNicheOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                 </CollapsibleTrigger>
-                <CollapsibleContent className="mt-3 space-y-4">
+                <CollapsibleContent className="mt-3 space-y-4 rounded-2xl border bg-card p-4 sm:p-5">
                   <div>
                     <Label className="mb-2 text-gray-700 flex items-center gap-2" htmlFor="product_name">
                       <Tag className="w-4 h-4 text-primary/80" /> 商品名
@@ -507,7 +535,7 @@ export default function PostForm({
             </form>
           </div>
 
-          <DialogFooter className="px-5 py-4 border-t bg-background">
+          <DialogFooter className="sticky bottom-0 px-5 py-4 border-t bg-background">
             <Button
               type="submit"
               form="mamelog-form"

@@ -11,41 +11,50 @@ import {
 } from "firebase/auth";
 import { auth } from "./firebase";
 
+const ensureAuth = () => {
+  if (!auth) {
+    throw new Error("Firebase Authが初期化されていません");
+  }
+  return auth;
+};
+
 // メールアドレスとパスワードで登録
 export const register = (email: string, password: string) => {
-  return createUserWithEmailAndPassword(auth, email.trim(), password);
+  return createUserWithEmailAndPassword(ensureAuth(), email.trim(), password);
 };
 
 // メールアドレスとパスワードでログイン
 export const login = (email: string, password: string) => {
-  return signInWithEmailAndPassword(auth, email.trim(), password);
+  return signInWithEmailAndPassword(ensureAuth(), email.trim(), password);
 };
 
 // 匿名ログイン（ゲストログイン）
 export const guestLogin = () => {
-  return signInAnonymously(auth);
+  return signInAnonymously(ensureAuth());
 };
 
 // Googleでログイン
 export const googleLogin = () => {
   const provider = new GoogleAuthProvider();
-  return signInWithPopup(auth, provider);
+  return signInWithPopup(ensureAuth(), provider);
 };
 
 // ログアウト
 export const logout = () => {
-  return signOut(auth);
+  return signOut(ensureAuth());
 };
 
 export const deleteCurrentUser = async () => {
-  if (!auth.currentUser) {
+  const firebaseAuth = ensureAuth();
+
+  if (!firebaseAuth.currentUser) {
     throw new Error("ログインユーザーが存在しません");
   }
 
-  await deleteUser(auth.currentUser);
+  await deleteUser(firebaseAuth.currentUser);
 };
 
 // 認証状態の監視
 export const onAuthStateChange = (callback: (user: User | null) => void) => {
-  return onAuthStateChanged(auth, callback);
+  return onAuthStateChanged(ensureAuth(), callback);
 };
