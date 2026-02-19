@@ -13,9 +13,17 @@ import {
 import db from "@/lib/firebase/firebase";
 import { Mamelog } from "@/types/mamelog";
 
+const ensureDb = () => {
+  if (!db) {
+    throw new Error("Firestoreが初期化されていません");
+  }
+  return db;
+};
+
 export const fetchMamelogs = async (userId: string): Promise<Mamelog[]> => {
+  const firestore = ensureDb();
   const q = query(
-    collection(db, "mamelog"),
+    collection(firestore, "mamelog"),
     where("regist_user", "==", userId)
   );
   const snap = await getDocs(q);
@@ -36,7 +44,8 @@ export const fetchMamelogs = async (userId: string): Promise<Mamelog[]> => {
 };
 
 export const addMamelog = async (data: Omit<Mamelog, "id">) => {
-  const docRef = await addDoc(collection(db, "mamelog"), {
+  const firestore = ensureDb();
+  const docRef = await addDoc(collection(firestore, "mamelog"), {
     ...data,
     exp_date: Timestamp.fromDate(new Date(data.exp_date)),
     purchase_date: Timestamp.fromDate(new Date(data.purchase_date)),
@@ -48,7 +57,8 @@ export const addMamelog = async (data: Omit<Mamelog, "id">) => {
 };
 
 export async function setMamelog(id: string, data: Mamelog) {
-  const docRef = doc(db, "mamelog", id);
+  const firestore = ensureDb();
+  const docRef = doc(firestore, "mamelog", id);
   await setDoc(
     docRef,
     {
@@ -65,19 +75,21 @@ export async function setMamelog(id: string, data: Mamelog) {
 
 export const deleteMamelog = async (id: string) => {
   try {
-    await deleteDoc(doc(db, "mamelog", id));
+    const firestore = ensureDb();
+    await deleteDoc(doc(firestore, "mamelog", id));
   } catch (error) {
     console.error("削除エラー:", error);
   }
 };
 
 export const deleteMamelogsByUser = async (userId: string) => {
-  const q = query(collection(db, "mamelog"), where("regist_user", "==", userId));
+  const firestore = ensureDb();
+  const q = query(collection(firestore, "mamelog"), where("regist_user", "==", userId));
   const snap = await getDocs(q);
 
-  const batch = writeBatch(db);
+  const batch = writeBatch(firestore);
   snap.docs.forEach((docSnap) => {
-    batch.delete(doc(db, "mamelog", docSnap.id));
+    batch.delete(doc(firestore, "mamelog", docSnap.id));
   });
 
   await batch.commit();

@@ -17,10 +17,23 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
+
+const hasFirebaseConfig = [
+  firebaseConfig.apiKey,
+  firebaseConfig.authDomain,
+  firebaseConfig.projectId,
+  firebaseConfig.appId,
+].every(Boolean);
+
 // Initialize Firebase
-const app = !getApps().length ? initializeApp(firebaseConfig) : getApps()[0];
-const db = getFirestore(app);
+const app = hasFirebaseConfig
+  ? !getApps().length
+    ? initializeApp(firebaseConfig)
+    : getApps()[0]
+  : null;
+const db = app ? getFirestore(app) : null;
 // const analytics = getAnalytics(app);
 
-export const auth = getAuth(app);
+export const auth = app && typeof window !== "undefined" ? getAuth(app) : null;
+export const isFirebaseReady = Boolean(app);
 export default db;

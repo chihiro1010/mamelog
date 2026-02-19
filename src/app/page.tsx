@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { fetchMamelogs } from "@/lib/firebase/mamelog";
 import PostForm from "@/components/PostForm";
 import MamelogList from "@/components/MamelogList";
@@ -10,6 +10,7 @@ import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SquarePen } from "lucide-react";
 import { Mamelog } from "@/types/mamelog";
+import { auth } from "@/lib/firebase/firebase";
 
 export default function Home() {
   const [mamelogs, setMamelogs] = useState<Mamelog[]>([]);
@@ -17,8 +18,7 @@ export default function Home() {
   const [open, setOpen] = useState(false);
 
   const loadMamelogs = async () => {
-    const auth = getAuth();
-    const user = auth.currentUser;
+    const user = auth?.currentUser;
     if (user) {
       const data = await fetchMamelogs(user.uid);
       setMamelogs(data);
@@ -26,7 +26,11 @@ export default function Home() {
   };
 
   useEffect(() => {
-    const auth = getAuth();
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         const data = await fetchMamelogs(user.uid);
