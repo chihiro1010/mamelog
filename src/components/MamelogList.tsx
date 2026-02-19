@@ -60,19 +60,19 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
 
   if (!mamelogs || mamelogs.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-96 my-8 ">
-        <Coffee className="w-16 h-16 mb-8 text-primary/80" />
-        <div className="text-lg font-medium mb-4 text-gray-500">
-          まめログが未登録のようです
+      <div className="my-8 flex min-h-[calc(100svh-330px)] flex-col items-center justify-center rounded-2xl border border-dashed border-primary/25 bg-white/80 px-6 text-center">
+        <Coffee className="mb-6 h-16 w-16 text-primary/80" />
+        <div className="mb-3 text-xl font-semibold tracking-tight text-foreground">
+          まめログが未登録です
         </div>
-        <div className="text-m text-gray-400">
+        <div className="text-sm leading-7 text-muted-foreground">
           右下の
-          <span className="inline-block align-middle mx-1">
-            <span className="inline-flex items-center justify-center bg-primary text-white w-6 h-6 rounded-full shadow">
-              <SquarePen size={16} />
+          <span className="mx-1 inline-block align-middle">
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-primary text-white shadow">
+              <SquarePen size={14} />
             </span>
           </span>
-          ボタンから追加しましょう
+          ボタンから最初の豆を登録しましょう
         </div>
       </div>
     );
@@ -92,7 +92,7 @@ export default function MamelogList({ mamelogs, onSuccess }: Props) {
           <div key={item.id}>
             <Popover>
               <PopoverTrigger asChild>
-                <Card className="relative mb-2 rounded-sm cursor-pointer py-4">
+                <Card className="relative mb-3 cursor-pointer rounded-xl border-primary/10 py-4">
                   <Button
                     variant="ghost"
                     size="icon"
