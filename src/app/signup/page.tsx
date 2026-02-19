@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { register, guestLogin, googleLogin } from "@/lib/firebase/auth";
-import { Loader2 } from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
+import LogoutChecker from "@/components/LogoutChecker";
 
 export default function RegisterForm() {
   const [email, setEmail] = useState("");
@@ -64,13 +65,20 @@ export default function RegisterForm() {
   };
 
   return (
-    <main className="p-4">
-      <Card className="w-full max-w-md mx-auto">
-        <CardHeader>
-          <CardTitle className="text-xl">アカウントを作成</CardTitle>
+    <main className="px-4 pb-8 pt-6">
+      <LogoutChecker />
+      <Card className="mx-auto w-full overflow-hidden rounded-2xl border-primary/20">
+        <CardHeader className="bg-gradient-to-r from-[#5c2e13] to-[#9c7458] py-5 text-primary-foreground">
+          <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/20">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <CardTitle className="text-2xl">新規登録</CardTitle>
+          <p className="text-sm text-primary-foreground/85">
+            まめログをはじめて、コーヒー体験を積み上げましょう。
+          </p>
         </CardHeader>
         <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-4 p-5">
             <div className="space-y-2">
               <Label htmlFor="email">メールアドレス</Label>
               <Input
@@ -95,23 +103,23 @@ export default function RegisterForm() {
                 required
               />
             </div>
-            {error && <p className="text-red-500 text-sm">{error}</p>}
+            {error && <p className="text-sm text-red-500">{error}</p>}
           </CardContent>
-          <CardFooter className="flex flex-col space-y-2 mt-4">
-            <Button type="submit" className="w-full" disabled={loadingType !== null}>
+          <CardFooter className="mt-2 flex flex-col space-y-2 px-5 pb-5">
+            <Button type="submit" className="h-11 w-full" disabled={loadingType !== null}>
               {loadingType === "email" ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 登録中...
                 </>
               ) : (
-                "新規登録"
+                "メールアドレスで登録"
               )}
             </Button>
             <Button
               type="button"
               variant="outline"
               onClick={handleGoogleLogin}
-              className="w-full"
+              className="h-11 w-full"
               disabled={loadingType !== null}
             >
               {loadingType === "google" ? "Googleでログイン中..." : "Googleでログイン"}
@@ -120,15 +128,15 @@ export default function RegisterForm() {
               type="button"
               variant="secondary"
               onClick={handleGuestLogin}
-              className="w-full"
+              className="h-11 w-full"
               disabled={loadingType !== null}
             >
               {loadingType === "guest" ? "おためしログイン中..." : "おためしログイン"}
             </Button>
 
-            <p className="pt-2 text-sm text-muted-foreground">
+            <p className="pt-2 text-center text-sm text-muted-foreground">
               すでにアカウントをお持ちですか？{" "}
-              <Link href="/login" className="text-primary underline underline-offset-4">
+              <Link href="/login" className="font-medium text-primary underline underline-offset-4">
                 ログイン
               </Link>
             </p>

@@ -81,7 +81,6 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <head>
-        {/* Google Analytics */}
         <script
           async
           src="https://www.googletagmanager.com/gtag/js?id=G-EQGH0WDSTD"
@@ -100,21 +99,28 @@ export default function RootLayout({
         <meta name="theme-color" content="#4B3621" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased pb-20`} // フッター分余白を確保
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-[radial-gradient(circle_at_top,_rgba(92,46,19,0.14),transparent_52%)] antialiased pb-20`}
       >
         <Analytics />
-        <Link className="flex justify-center mt-3 pb-3 border-b" href="/">
-          <Image
-            src="/icons/icon-512x512.png"
-            alt="まめログ"
-            width={40}
-            height={40}
-            priority
-          />
-        </Link>
-        {children}
+        <header className="sticky top-0 z-40 border-b border-border/80 bg-background/90 backdrop-blur-lg">
+          <Link className="mx-auto flex w-full max-w-md items-center justify-center gap-2 px-4 py-3" href="/">
+            <Image
+              src="/icons/icon-512x512.png"
+              alt="まめログ"
+              width={38}
+              height={38}
+              priority
+              className="rounded-xl"
+            />
+            <div className="text-left leading-tight">
+              <p className="text-sm text-muted-foreground">Coffee Bean Journal</p>
+              <p className="text-lg font-semibold tracking-tight text-primary">まめログ</p>
+            </div>
+          </Link>
+        </header>
+        <div className="mx-auto w-full max-w-md">{children}</div>
 
-        <FooterNav></FooterNav>
+        <FooterNav />
       </body>
     </html>
   );
